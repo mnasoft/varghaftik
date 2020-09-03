@@ -1,16 +1,14 @@
 ;;;; varghaftik.lisp
 
-(annot:enable-annot-syntax)
-
 (in-package #:cl-user)
 
 (defpackage #:varghaftik
   (:use #:cl)
-  )
-
-;;;;(declaim (optimize (space 0) (compilation-speed 0)  (speed 0) (safety 3) (debug 3)))
-
-;;;; (declaim (optimize (compilation-speed 0) (debug 3) (safety 0) (space 0) (speed 0)))
+  (:export η_sazerlend
+	   k
+	   gases-list
+	   μ
+           rμ k-data))
 
 (in-package #:varghaftik)
 
@@ -57,8 +55,8 @@
 обусловленной зависимостью вязкости от давления."
   )
 
-@export
-@annot.doc:doc
+(export 'η_sazerlend )
+(defun η_sazerlend (aT &key (gas_name "Воздух"))
 "Формула Сазерленда может быть использована для определения 
 динамической вязкости идеального газа в зависимости от температуры.
 Эту формулу можно применять для температур в диапазоне 0 < T < 555 K 
@@ -78,7 +76,6 @@ gas_name - \"Воздух\" \"Азот\" \"Кислород\"
 
 Коэффициент динамической вязкости для некоторых газов в зависимости от абсолютной температуры по формуле Сазерленда
 "
-(defun η_sazerlend (aT &key (gas_name "Воздух"))
   (multiple-value-bind (name C T0 μ0)
       (values-list (assoc gas_name Sazerlend_koeff :test #'equal))
 ;;;;    (format T "~A ~A ~A ~A ~A " name aT T0 C μ0)
@@ -108,13 +105,12 @@ gas_name - \"Воздух\" \"Азот\" \"Кислород\"
 Молекулярные массы некоторых газов")
 
 
-@export
-@annot.doc:doc
-"Возвращает молекулярную массу газа [kg/mol]"
+(export 'μ )
 (defun μ (&key (gas_name "Воздух"))
-    (nth 1 (assoc gas_name μ-data :test #'equal)))
+"Возвращает молекулярную массу газа [kg/mol]"
+  (nth 1 (assoc gas_name μ-data :test #'equal)))
 
-@export
+(export 'k-data)
 (defparameter k-data
   '(("Воздух" 	                1.4)
     ("Азот"                     1.4)
@@ -133,21 +129,18 @@ gas_name - \"Воздух\" \"Азот\" \"Кислород\"
   "Газ mu[kg/mol]
 Коэффициент адиабаты некоторых газов")
 
-@export
-@annot.doc:doc
-"Возвращает показатель адиабаты газа [1]"
+(export 'k )
 (defun k (&key (gas_name "Воздух"))
+"Возвращает показатель адиабаты газа [1]"
   (nth 1 (assoc gas_name k-data :test #'equal)))
 
-
-@export
+(export 'Rμ)
 (defparameter Rμ 8.314
   "Универсальная газовая постоянная [J/(mol*K)]")
 
-@export
-@annot.doc:doc
-"Таблица с газами"
+(export 'gases-list )
 (defun gases-list ()
+"Таблица с газами"
   (delete-duplicates
    (append (mapcar #'first k-data)
 	   (mapcar #'first μ-data)
