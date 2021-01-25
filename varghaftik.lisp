@@ -139,6 +139,7 @@ gas_name - \"Воздух\" \"Азот\" \"Кислород\"
   "Универсальная газовая постоянная [J/(mol*K)]")
 
 (export 'gases-list )
+
 (defun gases-list ()
 "Таблица с газами"
   (delete-duplicates
