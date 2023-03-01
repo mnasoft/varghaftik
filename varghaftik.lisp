@@ -1,15 +1,14 @@
 ;;;; varghaftik.lisp
 
-(in-package #:cl-user)
-
 (defpackage #:varghaftik
   (:use #:cl)
-  (:export η_sazerlend
+  (:export n-sazerlend
 	   k
-	   gases-list
-	   μ
-           rμ
-           k-data))
+	   mu
+           R-mu)
+  (:export gases-list)
+  (:export k-data
+           mu-data))
 
 (in-package #:varghaftik)
 
@@ -56,9 +55,7 @@
 обусловленной зависимостью вязкости от давления."
   )
 
-(export 'η_sazerlend )
-
-(defun η_sazerlend (aT &key (gas_name "Воздух"))
+(defun n-sazerlend (aT &key (gas_name "Воздух"))
 "Формула Сазерленда может быть использована для определения 
 динамической вязкости идеального газа в зависимости от температуры.
 Эту формулу можно применять для температур в диапазоне 0 < T < 555 K 
@@ -73,7 +70,7 @@ gas_name - \"Воздух\" \"Азот\" \"Кислород\"
            \"Водород\" \"Аммиак\" \"Оксид серы(IV)\" 
            \"Гелий\"
 Пример использования:
-(η_sazerlend (+ 273 0) :gas_name \"Азот\")
+(n-sazerlend (+ 273 0) :gas_name \"Азот\")
 => 1.6524342e-5, \"Азот\"
 
 Коэффициент динамической вязкости для некоторых газов в зависимости от абсолютной температуры по формуле Сазерленда
@@ -83,12 +80,12 @@ gas_name - \"Воздух\" \"Азот\" \"Кислород\"
 ;;;;    (format T "~A ~A ~A ~A ~A " name aT T0 C μ0)
     (values (* 0.000001 μ0 (/ (+ T0 C) (+ aT C)) (expt (/ aT T0) 3/2)) name)))
 
-(defun η_sazerlend-list()
+(defun n-sazerlend-list()
   )
 
-;;;;(mapcar #'(lambda (el) (list el(η_sazerlend (+ 273.15 el) :gas_name "Аммиак"))) '(-20.0 0.0 20. 40. 60. 80. 100. 150. 200. 300. 400.  600.0 800.0))
+;;;;(mapcar #'(lambda (el) (list el(n-sazerlend (+ 273.15 el) :gas_name "Аммиак"))) '(-20.0 0.0 20. 40. 60. 80. 100. 150. 200. 300. 400.  600.0 800.0))
 
-(defparameter μ-data
+(defparameter mu-data
   '(("Воздух"                   0.02896)
     ("Азот"                     0.028)
     ("Кислород"                 0.032)
@@ -112,12 +109,10 @@ gas_name - \"Воздух\" \"Азот\" \"Кислород\"
   "Газ mu[kg/mol]
 Молекулярные массы некоторых газов")
 
-(export 'μ )
-(defun μ (&key (gas_name "Воздух"))
+(defun mu (&key (gas_name "Воздух"))
 "Возвращает молекулярную массу газа [kg/mol]"
-  (nth 1 (assoc gas_name μ-data :test #'equal)))
+  (nth 1 (assoc gas_name mu-data :test #'equal)))
 
-(export 'k-data)
 (defparameter k-data
   '(("Воздух" 	                1.4)
     ("Азот"                     1.4)
@@ -142,20 +137,16 @@ gas_name - \"Воздух\" \"Азот\" \"Кислород\"
   "Газ mu[kg/mol]
 Коэффициент адиабаты некоторых газов")
 
-(export 'k )
 (defun k (&key (gas_name "Воздух"))
 "Возвращает показатель адиабаты газа [1]"
   (nth 1 (assoc gas_name k-data :test #'equal)))
 
-(export 'Rμ)
-(defparameter Rμ 8.314
-  "Универсальная газовая постоянная [J/(mol*K)]")
-
-(export 'gases-list )
+(defconstant R-mu 8.314
+  "@b(Описание:) Константа @b(R-mu) является универсальной газовой постоянной [J/(mol*K)]")
 
 (defun gases-list ()
 "Таблица с газами"
   (delete-duplicates
    (append (mapcar #'first k-data)
-	   (mapcar #'first μ-data)
+	   (mapcar #'first mu-data)
 	   (mapcar #'first Sazerlend_koeff))))
