@@ -1,6 +1,6 @@
 ;;;; varghaftik.lisp
 
-(defpackage #:varghaftik
+(defpackage :varghaftik
   (:use #:cl)
   (:export n-sazerlend
 	   k
@@ -10,7 +10,7 @@
   (:export k-data
            mu-data))
 
-(in-package #:varghaftik)
+(in-package :varghaftik)
 
 (defparameter |air-η[t(C),p=1atm][p565]|
   '((   0.0 171.0)
